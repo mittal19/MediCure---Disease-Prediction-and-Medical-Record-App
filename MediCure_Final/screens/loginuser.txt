@@ -1,0 +1,152 @@
+import React, { Component } from 'react';
+import { StyleSheet, Dimensions,View, TextInput,TouchableOpacity,Text, Image, Animated, Keyboard, KeyboardAvoidingView } from 'react-native';
+import logo from './logo.png';
+
+const window = Dimensions.get('window');
+const IMAGE_HEIGHT = window.width / 2;
+const IMAGE_HEIGHT_SMALL = window.width /7;
+
+class Demo extends Component {
+  static navigationOptions = {
+    header:null
+  };
+  constructor(props) {
+    super(props);
+
+    this.imageHeight = new Animated.Value(IMAGE_HEIGHT);
+  }
+
+  componentWillMount () {
+    this.keyboardWillShowSub = Keyboard.addListener(this.keyboardWillShow);
+    this.keyboardWillHideSub = Keyboard.addListener('keyboardWillHide', this.keyboardWillHide);
+  }
+
+  componentWillUnmount() {
+    this.keyboardWillShowSub.remove();
+    this.keyboardWillHideSub.remove();
+  }
+
+  keyboardWillShow = (event) => {
+    console.log('d');
+    Animated.timing(this.imageHeight, {
+      duration: event.duration,
+      toValue: IMAGE_HEIGHT_SMALL,
+    }).start();
+  };
+
+  keyboardWillHide = (event) => {
+    Animated.timing(this.imageHeight, {
+      duration: event.duration,
+      toValue: IMAGE_HEIGHT,
+    }).start();
+  };
+
+  render() {
+    return (
+      <KeyboardAvoidingView
+        style={styles.container}
+        behavior="padding"
+      >
+        <View style={styles.container2}>
+        
+          <View style={styles.ovalbackground}>
+          </View>
+
+          <Text style={styles.textst}>MediCure</Text>
+        </View>
+
+                <View style={styles.container1}>
+
+
+          <Animated.Image source={logo} style={[styles.logo, { height: this.imageHeight }]} />
+          <View style={styles.container1}>
+          <TextInput
+            placeholder="Email"
+            style={styles.input}
+          />
+          <TextInput
+            placeholder="Username"
+            style={styles.input}
+          />
+         <TouchableOpacity style={styles.button} onPress={() => this.loginUser(this.state.email,this.state.password) }>
+                <Text style={styles.buttontext}>Log In</Text>
+              </TouchableOpacity>
+          </View>
+          </View>
+      </KeyboardAvoidingView>
+    );
+  }
+};
+
+const styles = StyleSheet.create({
+  container: {
+    backgroundColor:'#191640',
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  textst:{
+    alignSelf: 'center',
+    justifyContent:'center',
+    color:'white',
+    fontSize:25
+    //fontFamily: "Grenze-Black",
+  },
+  container2: {
+    alignSelf: 'center',
+    justifyContent:'center',
+    width: '100%',
+    overflow: 'hidden',
+    height: 100
+  },
+  ovalbackground: {  
+    borderRadius: 600, 
+    width: '200%',
+    height: 800,
+    marginLeft: -200,
+    position: 'absolute',
+    bottom: 0, 
+    overflow: 'hidden',
+    backgroundColor:'#0E0B33' 
+  },
+  input: {
+    height: 50,
+    backgroundColor: '#fff',
+    marginHorizontal: 10,
+    marginVertical: 5,
+   // paddingVertical: 5,
+    paddingHorizontal: 15,
+    width: window.width - 30,
+  },
+  logo: {
+    height: IMAGE_HEIGHT,
+    resizeMode: 'contain',
+    marginBottom: 20,
+    padding:10,
+    marginTop:20
+  },
+  register:{
+    marginBottom:20, 
+    width:window.width -100,
+    alignItems:'center',
+    justifyContent:'center',
+    height:50,
+    backgroundColor: '#ffae'
+  },
+  button: {
+      marginTop:20,
+      width:300,
+      backgroundColor:'#0E0B33',
+      borderRadius :10,
+      height: 42,
+      justifyContent: 'center',
+    },
+    buttontext:{
+      fontSize:16,
+      fontWeight: '500',
+      color:'#ffffff',
+      textAlign:'center',
+    },
+});
+
+export default Demo;

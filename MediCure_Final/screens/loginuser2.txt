@@ -1,0 +1,214 @@
+import React, { Component } from 'react';
+import {Platform, StyleSheet,Text,View,TouchableOpacity,Dimensions,Image,FlatList,AsyncStorage,TouchableHighlight,Button,TextInput} from 'react-native';
+import * as firebase from 'firebase';
+import Toast from 'react-native-simple-toast';
+import UserSignin from './UserSignin';
+import UserMain from './UserMain';
+import DocLogin from './DocLogin';
+
+const firebaseConfig = {
+    apiKey: "AIzaSyCb_Ph_usfKoo5LIk7wOrC4AnuwtCAvfq8",
+    authDomain: "medicure1-1ec37.firebaseapp.com",
+    databaseURL: "https://medicure1-1ec37.firebaseio.com",
+    projectId: "medicure1-1ec37",
+    storageBucket: "medicure1-1ec37.appspot.com",
+  };
+firebase.initializeApp(firebaseConfig);
+
+export default class UserLogin extends Component<Props> {
+
+static navigationOptions = {
+    header:null
+  };
+
+  constructor(props){
+    super(props)
+    this.state=({
+      email:'',
+      password:''
+    })
+  }
+
+  loginUser=(email,password)=>
+  {
+    console.log('in');
+    firebase.auth().signInWithEmailAndPassword(email,password)
+    .then((user)=> {
+      Toast.show('Welcome');
+      this.props.navigation.push('UserMain',{ 
+            firebase
+        }
+      );
+    })
+    .catch((error)=>{
+      Toast.show("Invalid Login Details");
+      console.log(error.toString());
+    });
+  }
+
+  FunctionToOpenSecondActivity = () =>
+  {
+     this.props.navigation.navigate('UserSignin',{firebase});
+  }
+
+  render() {
+    return (
+      <View style={styles.container1}>
+
+        <View style={styles.container2}>
+        
+          <View style={styles.ovalbackground}>
+          </View>
+
+          <Text style={styles.textst}>MediCure</Text>
+        </View>
+
+        <View style={styles.container1}>
+
+          <Image style={styles.person} source={require('./assets/doc.png')} />   
+
+          <View style={styles.container1}>
+              
+              <TextInput  
+                style={styles.inputbox}  
+                placeholder="Enter Email"  
+                placeholderTextColor= 'rgba(192,192,192,50)'  
+                underlineColorAndroid = 'rgba(192,192,192,50)'
+                onChangeText={(email)=>this.setState({email})}
+              />
+              <TextInput
+                secureTextEntry={true}
+                style={styles.inputbox}
+                placeholder="Enter Password"  
+                placeholderTextColor= 'rgba(192,192,192,50)'  
+                underlineColorAndroid = 'rgba(192,192,192,50)'
+                onChangeText={(password)=>this.setState({password})}
+              />
+              <TouchableOpacity style={styles.button}>
+                <Text style={styles.buttontext}  onPress={() => this.loginUser(this.state.email,this.state.password) }>Log In</Text>
+              </TouchableOpacity>
+              
+          </View>
+
+          <View style={styles.signupcon}>
+
+            <Text style={styles.signuptext}>Don't have account yet? </Text>
+            <Text style={{color:'#219AE3'}} onPress={()=>this.FunctionToOpenSecondActivity()}>SignUP.</Text>
+        
+          </View>
+          <Text style={{paddingBottom:20,fontSize:15,color:'white'}}>or</Text>
+          <View style={styles.appFooter}>
+          
+            <Text style={styles.clicktext}>Are You a doctor?</Text>
+            <Text style={{color:'#219AE3',fontSize:18}} onPress={()=>this.props.navigation.push('DocLogin',{firebase})}> Click Here. </Text>
+          
+          </View>
+
+        </View>
+
+      </View>
+    );
+  }
+}
+
+const styles = StyleSheet.create({
+  appFooter: {
+        //flex: 0,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#191640',
+       
+        paddingBottom:30
+    },
+  textst:{
+    alignSelf: 'center',
+    justifyContent:'center',
+    color:'white',
+    fontSize:25
+    //fontFamily: "Grenze-Black",
+  },
+  container2: {
+    alignSelf: 'center',
+    justifyContent:'center',
+    width: '100%',
+    overflow: 'hidden',
+    height: 100
+  },
+  ovalbackground: {  
+    borderRadius: 600, 
+    width: '200%',
+    height: 800,
+    marginLeft: -200,
+    position: 'absolute',
+    bottom: 0, 
+    overflow: 'hidden',
+    backgroundColor:'#0E0B33' 
+  },
+  container1:{
+
+    backgroundColor:'#191640',
+    flex: 1,
+    justifyContent :'center',
+    alignItems: 'center',
+      //backgroundColor: '#000000'
+  },
+   login:{
+      marginTop:15,
+      color:'#ffffff',
+      fontSize:26
+    },
+    person:{
+      marginTop:60,
+      marginBottom:40
+    },
+    fbimg: {
+      width: 300,
+    },
+    inputbox:{
+      width: 300,
+      //marginTop: 35,
+      padding:29,
+      height: 72,
+      //backgroundColor: 'rgba(255,255,255,0.3)',
+      color: 'white',
+      //borderBottomWidth: 1,
+       // borderBottomColor: 'gray',
+
+    },
+    button: {
+      marginTop:20,
+      width:300,
+      backgroundColor:'#0E0B33',
+      borderRadius :10,
+      height: 42,
+      justifyContent: 'center',
+    },
+    buttontext:{
+      fontSize:16,
+      fontWeight: '500',
+      color:'#ffffff',
+      textAlign:'center',
+    },
+    signupcon:{
+      marginTop:40,
+      flexGrow:1,
+      alignItems:'center',
+      justifyContent: 'flex-end',
+      flexDirection:'row'
+    },
+    signuptext:{
+      fontSize:16,
+      color:'rgba(192,192,192,50)'
+    },
+    clicktext:{
+      fontSize:18,
+      color:'rgba(192,192,192,50)'
+    },
+    conditionscon:{
+      alignItems:'center',
+      justifyContent: 'flex-end',
+      flexDirection:'row',
+      marginBottom:30
+    }
+});
